@@ -1,35 +1,54 @@
 require "json"
 require "nestful"
 
-class FBK
-  FACEBOOK_URL = "https://graph.facebook.com"
+module FBK
+  extend self
 
-  def self.get_access_token(params)
-    query = parse_params(params)
+  FACEBOOK_URL       = "https://facebook.com"
+  FACEBOOK_GRAPH_URL = "https://graph.facebook.com/v2.0"
 
-    response = Nestful.get("#{FACEBOOK_URL}/oauth/access_token?#{query}").body
+  attr_writer :client_id, :client_secret
+
+  def configure
+    yield self
+  end
+
+  def authorize_uri(params)
+    params[:client_id] = @client_id
+    params[:scope] = params[:scope].join(",")
+
+    query_string = params_to_query_string(params)
+
+    "#{FACEBOOK_URL}/dialog/oauth?#{query_string}"
+  end
+
+  def get_access_token(params)
+    params[:client_id]     = @client_id
+    params[:client_secret] = @client_secret
+
+    query_string = params_to_query_string(params)
+
+    response = Nestful.get("#{FACEBOOK_GRAPH_URL}/oauth/access_token?#{query_string}").body
     response = parse_response(response)
 
     response[:access_token]
   end
 
-  def self.get_user_info(token)
-    response = Nestful.get("#{FACEBOOK_URL}/me?access_token=#{token}")
-    JSON.parse(response.body, symbolize_names: true)
+  def get_user_info(token)
+    response = Nestful.get("#{FACEBOOK_GRAPH_URL}/me?access_token=#{token}").body
+    JSON.parse(response, symbolize_names: true)
   end
 
   private
 
-  def self.parse_params(params)
-    params.each_with_object([]) { |(k,v), query| query << "#{k}=#{v}" }.join("&")
+  def params_to_query_string(params)
+    params.map { |k,v| "#{k}=#{v}" }.join("&")
   end
 
-  def self.parse_response(response)
+  def parse_response(response)
     response.split("&").each_with_object({}) do |parameter, hash|
       key, value = parameter.split("=")
       hash[key.to_sym] = value
     end
   end
-
-  private_class_method :parse_params, :parse_response
 end
