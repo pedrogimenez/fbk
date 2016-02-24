@@ -52,14 +52,15 @@ module FBK
     friends
   end
 
-  def get_user_picture(user_id, params)
+  def get_user_picture(token, params = {})
+    params[:access_token]  = token
     params[:client_id]     = @client_id
     params[:client_secret] = @client_secret
     params[:redirect]      = false
 
     query_string = params_to_query_string(params)
 
-    get("#{FACEBOOK_GRAPH_URL}/#{user_id}/picture?#{query_string}")
+    get("#{FACEBOOK_GRAPH_URL}/me/picture?#{query_string}")[:data]
   end
 
   private
