@@ -35,8 +35,21 @@ module FBK
   end
 
   def get_user_info(token)
-    response = Nestful.get("#{FACEBOOK_GRAPH_URL}/me?access_token=#{token}").body
-    JSON.parse(response, symbolize_names: true)
+    get("#{FACEBOOK_GRAPH_URL}/me?access_token=#{token}")
+  end
+
+  def get_user_friends(token)
+    json = get("#{FACEBOOK_GRAPH_URL}/me/friends?access_token=#{token}")
+
+    friends = get_friends_ids(json)
+
+    return friends if only_one_page?(friends, json)
+
+    while (json = get(json[:paging][:next])) && !json[:data].empty? do
+      friends += get_friends_ids(json)
+    end
+
+    friends
   end
 
   def get_user_picture(user_id, params)
@@ -46,11 +59,23 @@ module FBK
 
     query_string = params_to_query_string(params)
 
-    response = Nestful.get("#{FACEBOOK_GRAPH_URL}/#{user_id}/picture?#{query_string}")
-    JSON.parse(response.body, symbolize_names: true)
+    get("#{FACEBOOK_GRAPH_URL}/#{user_id}/picture?#{query_string}")
   end
 
   private
+
+  def get_friends_ids(json)
+    json[:data].map { |friend| friend[:id] }
+  end
+
+  def only_one_page?(friends, json)
+    friends.count == json[:summary][:total_count]
+  end
+
+  def get(endpoint)
+    response = Nestful.get(endpoint).body
+    JSON.parse(response, symbolize_names: true)
+  end
 
   def params_to_query_string(params)
     params.map { |k,v| "#{k}=#{v}" }.join("&")
