@@ -1,7 +1,7 @@
 Gem::Specification.new do |spec|
   spec.name                   = "fbk"
-  spec.version                = "1.1.0"
-  spec.date                   = "2015-05-09"
+  spec.version                = "1.2.0"
+  spec.date                   = "2016-02-24"
   spec.summary                = "Interacts with Facebook's Graph API."
   spec.description            = "Interacts with Facebook's Graph API."
   spec.authors                = ["Pedro Gimenez"]
