@@ -39,6 +39,17 @@ module FBK
     JSON.parse(response, symbolize_names: true)
   end
 
+  def get_user_picture(user_id, params)
+    params[:client_id]     = @client_id
+    params[:client_secret] = @client_secret
+    params[:redirect]      = false
+
+    query_string = params_to_query_string(params)
+
+    response = Nestful.get("#{FACEBOOK_GRAPH_URL}/#{user_id}/picture?#{query_string}")
+    JSON.parse(response.body, symbolize_names: true)
+  end
+
   private
 
   def params_to_query_string(params)
