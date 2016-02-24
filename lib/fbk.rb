@@ -4,6 +4,8 @@ require "nestful"
 module FBK
   extend self
 
+  Error = Class.new(RuntimeError)
+
   FACEBOOK_URL       = "https://facebook.com"
   FACEBOOK_GRAPH_URL = "https://graph.facebook.com/v2.0"
 
@@ -76,6 +78,8 @@ module FBK
   def get(endpoint)
     response = Nestful.get(endpoint).body
     JSON.parse(response, symbolize_names: true)
+  rescue Nestful::BadRequest
+    raise FBK::Error
   end
 
   def params_to_query_string(params)
