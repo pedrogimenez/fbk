@@ -45,6 +45,8 @@ module FBK
 
     friends = get_friends_ids(json)
 
+    return [] if friends.empty?
+
     return friends if only_one_page?(friends, json)
 
     while (json = get(json[:paging][:next])) && !json[:data].empty? do
