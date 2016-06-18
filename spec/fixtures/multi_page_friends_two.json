@@ -1,0 +1,18 @@
+{
+  "data": [
+    {
+      "name": "John Doe",
+      "id": "2"
+    }
+  ],
+  "paging": {
+    "cursors": {
+      "before": "cursor2",
+      "after": "cursor2"
+    },
+    "previous": "irrelevant"
+  },
+  "summary": {
+    "total_count": 2016
+  }
+}

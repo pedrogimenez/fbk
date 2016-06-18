@@ -1,0 +1,21 @@
+{
+  "data": [
+    {
+      "name": "Pedro Gimenez",
+      "id": "1"
+    },
+    {
+      "name": "John Doe",
+      "id": "2"
+    }
+  ],
+  "paging": {
+    "cursors": {
+      "before": "cursor1",
+      "after": "cursor2"
+    }
+  },
+  "summary": {
+    "total_count": 2016
+  }
+}
