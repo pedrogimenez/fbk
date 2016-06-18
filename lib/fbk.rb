@@ -42,6 +42,9 @@ module FBK
 
   def get_user_friends(token)
     json = get("#{FACEBOOK_GRAPH_URL}/me/friends?access_token=#{token}")
+
+    return [] if json[:data].empty?
+
     friends = get_friend_ids(json)
 
     while json[:paging][:next] do
