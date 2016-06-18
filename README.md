@@ -1,5 +1,7 @@
 # FBK
 
+[![Build Status](https://img.shields.io/travis/pedrogimenez/fbk/master.svg)](https://travis-ci.org/pedrogimenez/fbk)
+
 Just a bunch of methods that may come in handy when interacting with the Facebook Graph API.
 
 We use this gem at [Chicisimo](https://github.com/chicisimo).
