@@ -42,15 +42,11 @@ module FBK
 
   def get_user_friends(token)
     json = get("#{FACEBOOK_GRAPH_URL}/me/friends?access_token=#{token}")
+    friends = get_friend_ids(json)
 
-    friends = get_friends_ids(json)
-
-    return [] if friends.empty?
-
-    return friends if only_one_page?(friends, json)
-
-    while (json = get(json[:paging][:next])) && !json[:data].empty? do
-      friends += get_friends_ids(json)
+    while json[:paging][:next] do
+      json = get(json[:paging][:next])
+      friends.concat(get_friend_ids(json))
     end
 
     friends
@@ -69,12 +65,8 @@ module FBK
 
   private
 
-  def get_friends_ids(json)
+  def get_friend_ids(json)
     json[:data].map { |friend| friend[:id] }
-  end
-
-  def only_one_page?(friends, json)
-    friends.count == json[:summary][:total_count]
   end
 
   def get(endpoint)
