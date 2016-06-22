@@ -75,8 +75,8 @@ module FBK
   def get(endpoint)
     response = Nestful.get(endpoint).body
     JSON.parse(response, symbolize_names: true)
-  rescue Nestful::BadRequest
-    raise FBK::Error
+  rescue Nestful::BadRequest => error
+    raise FBK::Error.new(error.message)
   end
 
   def params_to_query_string(params)
