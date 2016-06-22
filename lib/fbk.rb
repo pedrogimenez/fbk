@@ -30,14 +30,11 @@ module FBK
 
     query_string = params_to_query_string(params)
 
-    response = Nestful.get("#{FACEBOOK_GRAPH_URL}/oauth/access_token?#{query_string}").body
-    response = parse_response(response)
-
-    response[:access_token]
+    get("#{FACEBOOK_GRAPH_URL}/oauth/access_token?#{query_string}")[:access_token]
   end
 
   def get_user_info(token)
-    get("#{FACEBOOK_GRAPH_URL}/me?access_token=#{token}")
+    get("#{FACEBOOK_GRAPH_URL}/me?access_token=#{token}&fields=id,email")
   end
 
   def get_user_friends(token)
@@ -81,12 +78,5 @@ module FBK
 
   def params_to_query_string(params)
     params.map { |k,v| "#{k}=#{v}" }.join("&")
-  end
-
-  def parse_response(response)
-    response.split("&").each_with_object({}) do |parameter, hash|
-      key, value = parameter.split("=")
-      hash[key.to_sym] = value
-    end
   end
 end
