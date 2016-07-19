@@ -70,12 +70,13 @@ module FBK
   end
 
   def get(endpoint)
-    response = Nestful.get(endpoint).body
-    JSON.parse(response, symbolize_names: true)
+    response = Nestful::Request.new(endpoint, timeout: 3).execute
+    JSON.parse(response.body, symbolize_names: true)
   rescue Nestful::BadRequest,
          Nestful::SSLError,
          Nestful::ServerError,
-         Nestful::ErrnoError => error
+         Nestful::ErrnoError,
+         Nestful::TimeoutError => error
     raise FBK::Error.new(error.message)
   end
 
