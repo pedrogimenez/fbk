@@ -7,7 +7,7 @@ module FBK
   Error = Class.new(RuntimeError)
 
   FACEBOOK_URL       = "https://facebook.com"
-  FACEBOOK_GRAPH_URL = "https://graph.facebook.com/v2.6"
+  FACEBOOK_GRAPH_URL = "https://graph.facebook.com/v2.11"
 
   attr_writer :client_id, :client_secret
 
